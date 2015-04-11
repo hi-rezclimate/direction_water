@@ -1,14 +1,12 @@
 $( function(){
 	var rendererOptions = {
-	  draggable: false
+	  draggable: true
 	};
 
 	var directionsDisplay = new google.maps.DirectionsRenderer( rendererOptions );;
 	var directionsService = new google.maps.DirectionsService();
 	var map;
 	var markers = [];
-
-	var wells;
 
 	var Tokyo = new google.maps.LatLng( 35.41032, 139.44982 );
 
@@ -44,64 +42,49 @@ $( function(){
 		  calcRoute( "秋葉原駅" );
 		}
 
-		$.getJSON(
-		  'data/well-uniq.geojson',
-		  function(data) {
-		    for( var i in data.features ){
+		google.maps.event.addListener( map, 'idle', getMarker );
+
+		function getMarker(){
+			fluster.clear();
+
+			var pos = map.getBounds();
+
+			var param = {
+	        "lat1": pos.getNorthEast().lat(),
+	        "lon1": pos.getNorthEast().lng(),
+	        "lat2": pos.getSouthWest().lat(),
+	        "lon2": pos.getSouthWest().lng()
+			};
+
+			var placeType = "";
+
+			var successFunction = function( data, status ){
+				fluster = new Fluster2( map );
+
+		    for( var i in data ){
 		    	var marker = new google.maps.Marker({
 		    		position: new google.maps.LatLng(
-		    				data.features[ i*30 ].properties.lat,
-		    				data.features[ i*30 ].properties.lng
+		    				data[ i ].lat,
+		    				data[ i ].lon
 		    			),
-		    		title: "井戸"
+		    		title: placeType
 		    	});
 		    	fluster.addMarker( marker );
-		    	markers.push( marker );
-		    	if( i > 1000 ) break;
 		    };
-		  }
-		);
 
-		$.getJSON(
-		  'data/drink-water_uniq.geojson',
-		  function(data) {
-		    for( var i in data.features ){
-		    	var marker = new google.maps.Marker({
-		    		position: new google.maps.LatLng(
-		    				data.features[ i*30 ].properties.lat,
-		    				data.features[ i*30 ].properties.lng
-		    			),
-		    		title: "蛇口"
-		    	});
-		    	fluster.addMarker( marker );
-		    	markers.push( marker );
-		    	if( i > 2000 ) break;
-		    };
-		  }
-		);
+		    fluster.initialize();
+			}
 
-		$.getJSON(
-		  'data/dam_japan.geojson',
-		  function(data) {
-		    for( var i in data.features ){
-		    	var marker = new google.maps.Marker({
-		    		position: new google.maps.LatLng(
-		    				data.features[ i*30 ].properties.lat,
-		    				data.features[ i*30 ].properties.lng
-		    			),
-		    		title: "ダム"
-		    	});
-		    	fluster.addMarker( marker );
-		    	markers.push( marker );
-		    	if( i > 100 ) break;
-		    };
-		  }
-		);
-		fluster.initialize();
+			placeType = "井戸";
+			$.getJSON(
+				"http://www.hi-rezclimate.org/~chome/test/get.py/well",
+				param, successFunction );
 
-		google.maps.event.addListener( map, 'idle', function(){
-			fluster.showClustersInBounds();
-		});
+			placeType = "蛇口";
+			$.getJSON(
+				"http://www.hi-rezclimate.org/~chome/test/get.py/drinking_water",
+				param, successFunction );
+		}
 	}
 
 	function calcRoute( from ) {
