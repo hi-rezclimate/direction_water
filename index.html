@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Draggable directions</title>
+    <link rel="stylesheet/less" type="text/css" href="root_map.less">
+    <script type="text/javascript" src="lib/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" src="lib/less.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+  </head>
+
+  <body>
+    <div id="map-canvas" style="float:left;width:70%; height:100%">
+    </div>
+    <div id="directionsPanel" style="float:right;width:30%;height 100%">
+    </div>
+    <div id="map_ui_area">
+      <form id="place_form">
+        <label for="place_text">三</label>
+        <input type="text" id="place_text">
+      </form>
+    </div>
+    <script type="text/javascript" src="root_map.js"></script>
+  </body>
+</html>
