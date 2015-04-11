@@ -6,6 +6,7 @@ $( function(){
 	var directionsDisplay = new google.maps.DirectionsRenderer( rendererOptions );;
 	var directionsService = new google.maps.DirectionsService();
 	var map;
+	var markers = [];
 
 	var wells;
 
@@ -55,6 +56,7 @@ $( function(){
 		    		title: "井戸"
 		    	});
 		    	fluster.addMarker( marker );
+		    	markers.push( marker );
 		    	if( i > 1000 ) break;
 		    };
 		  }
@@ -72,6 +74,7 @@ $( function(){
 		    		title: "蛇口"
 		    	});
 		    	fluster.addMarker( marker );
+		    	markers.push( marker );
 		    	if( i > 2000 ) break;
 		    };
 		  }
@@ -89,11 +92,16 @@ $( function(){
 		    		title: "ダム"
 		    	});
 		    	fluster.addMarker( marker );
+		    	markers.push( marker );
 		    	if( i > 100 ) break;
 		    };
 		  }
 		);
 		fluster.initialize();
+
+		google.maps.event.addListener( map, 'idle', function(){
+			fluster.showClustersInBounds();
+		});
 	}
 
 	function calcRoute( from ) {
