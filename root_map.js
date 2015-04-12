@@ -13,7 +13,26 @@ $( function(){
 	google.maps.event.addDomListener( window, 'load', initialize );
 
 	$( "#place_form" ).submit(function(){
-		calcRoute( $( "#place_text" ).val() );
+		var geocoder = new google.maps.Geocoder();
+		geocoder.geocode({
+    	address: $( "#place_text" ).val()
+	  }, function(results, status) {
+	    if (status == google.maps.GeocoderStatus.OK) {
+	      var bounds = new google.maps.LatLngBounds();
+
+	      for (var i in results) {
+	        if (results[i].geometry) {
+
+	          var latlng = results[i].geometry.location;
+
+	          calcRoute( new google.maps.LatLng(
+	          	latlng.lat(), latlng.lng() ) );
+	        }
+	        break;
+	      }
+	    }
+    });
+
     return false;
 	})
 
@@ -36,10 +55,10 @@ $( function(){
 											success_result.coords.latitude, 
 											success_result.coords.longitude ) );
 			}, function( error_result ){
-				calcRoute( "秋葉原駅" );
+				calcRoute( new google.maps.LatLng( 35.41032, 139.44982 ) );
 			});
 		}else{
-		  calcRoute( "秋葉原駅" );
+		  calcRoute( new google.maps.LatLng( 35.41032, 139.44982 ) );
 		}
 
 		google.maps.event.addListener( map, 'idle', getMarker );
@@ -72,7 +91,6 @@ $( function(){
 
 		    ajaxEndCount ++;
 
-		    console.log( ajaxEndCount);
 		    if( ajaxEndCount == 2 )
 		    	setMarker();
 			}
@@ -98,15 +116,27 @@ $( function(){
 	}
 
 	function calcRoute( from ) {
-	  var request = {
-	    origin: from,
-	    destination: '渋谷',
-	    travelMode: google.maps.TravelMode.WALKING
-	  };
-	  directionsService.route( request, function( response, status ) {
-	    if ( status == google.maps.DirectionsStatus.OK ) {
-	      directionsDisplay.setDirections( response );
-	    }
-	  });
+		$.getJSON(
+			"http://www.hi-rezclimate.org/~chome/test/min.py/drinking_water",
+			{ "lat": from.lat(), "lon": from.lng() },
+			function( data, status ){
+
+				var goal = new google.maps.LatLng(
+					data.coordinates[ 1 ],
+					data.coordinates[ 0 ]
+				);
+
+			  var request = {
+			    origin: from,
+			    destination: goal,
+			    travelMode: google.maps.TravelMode.WALKING
+			  };
+			  directionsService.route( request, function( response, status ) {
+			    if ( status == google.maps.DirectionsStatus.OK ) {
+			      directionsDisplay.setDirections( response );
+			    }
+			  });
+			}
+		);
 	}
 } );
