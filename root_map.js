@@ -48,7 +48,6 @@ $( function(){
 			fluster.clear();
 
 			var pos = map.getBounds();
-
 			var param = {
 	        "lat1": pos.getNorthEast().lat(),
 	        "lon1": pos.getNorthEast().lng(),
@@ -56,34 +55,45 @@ $( function(){
 	        "lon2": pos.getSouthWest().lng()
 			};
 
+			var ajaxEndCount = 0;
 			var placeType = "";
 
 			var successFunction = function( data, status ){
-				fluster = new Fluster2( map );
 
 		    for( var i in data ){
 		    	var marker = new google.maps.Marker({
 		    		position: new google.maps.LatLng(
 		    				data[ i ].lat,
 		    				data[ i ].lon
-		    			),
-		    		title: placeType
+		    			)
 		    	});
-		    	fluster.addMarker( marker );
+		    	markers.push( marker );
 		    };
 
-		    fluster.initialize();
+		    ajaxEndCount ++;
+
+		    console.log( ajaxEndCount);
+		    if( ajaxEndCount == 2 )
+		    	setMarker();
 			}
 
-			placeType = "井戸";
 			$.getJSON(
 				"http://www.hi-rezclimate.org/~chome/test/get.py/well",
 				param, successFunction );
 
-			placeType = "蛇口";
 			$.getJSON(
 				"http://www.hi-rezclimate.org/~chome/test/get.py/drinking_water",
 				param, successFunction );
+
+			function setMarker(){
+				fluster = new Fluster2( map );
+
+				for( var i in markers ){
+					fluster.addMarker( markers[i] );
+				}
+				
+		    fluster.initialize();
+			}
 		}
 	}
 
@@ -91,7 +101,7 @@ $( function(){
 	  var request = {
 	    origin: from,
 	    destination: '渋谷',
-	    travelMode: google.maps.TravelMode.DRIVING
+	    travelMode: google.maps.TravelMode.WALKING
 	  };
 	  directionsService.route( request, function( response, status ) {
 	    if ( status == google.maps.DirectionsStatus.OK ) {
