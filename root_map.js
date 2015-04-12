@@ -65,6 +65,7 @@ $( function(){
 
 		function getMarker(){
 			fluster.clear();
+			markers = [];
 
 			var pos = map.getBounds();
 			var param = {
