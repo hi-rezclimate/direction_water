@@ -13,6 +13,8 @@ $( function(){
 	google.maps.event.addDomListener( window, 'load', initialize );
 
 	$( "#place_form" ).submit(function(){
+		$( "#loading" ).show();
+
 		var geocoder = new google.maps.Geocoder();
 		geocoder.geocode({
     	address: $( "#place_text" ).val()
@@ -137,6 +139,7 @@ $( function(){
 			      directionsDisplay.setDirections( response );
 			    }
 			  });
+			  $( "#loading" ).hide();
 			}
 		);
 	}
