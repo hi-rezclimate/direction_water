@@ -3,11 +3,12 @@
   <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
-    <title>Draggable directions</title>
+    <title>Directions</title>
     <link rel="stylesheet/less" type="text/css" href="root_map.less">
     <script type="text/javascript" src="lib/jquery-1.11.2.min.js"></script>
     <script type="text/javascript" src="lib/less.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    <script type="text/javascript" src="lib/Fluster2.min.js"></script>
   </head>
 
   <body>
@@ -17,8 +18,9 @@
     </div>
     <div id="map_ui_area">
       <form id="place_form">
-        <label for="place_text">三</label>
-        <input type="text" id="place_text">
+        <label for="place_text"></label>
+        <input type="text" id="place_text" placeholder="Input Current Area">
+        <img src="loading.gif" id="loading">
       </form>
     </div>
     <script type="text/javascript" src="root_map.js"></script>
