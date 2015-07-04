@@ -81,7 +81,6 @@ $( function(){
 			var placeType = "";
 
 			var successFunction = function( data, status ){
-
 		    for( var i in data ){
 		    	var marker = new google.maps.Marker({
 		    		position: new google.maps.LatLng(
@@ -99,12 +98,12 @@ $( function(){
 			}
 
 			$.getJSON(
-				"http://www.hi-rezclimate.org/~chome/test/get.py/well",
+				"http://api.aerial-proj.org/water/get.py/well",
 				param, successFunction );
 
 			$.getJSON(
-				"http://www.hi-rezclimate.org/~chome/test/get.py/drinking_water",
-				param, successFunction );
+				"http://api.aerial-proj.org/water/get.py/drinking_water",
+				param, successFunction ).fail(function(jqXHR, textStatus){console.info(textStatus);});
 
 			function setMarker(){
 				fluster = new Fluster2( map );
@@ -120,7 +119,7 @@ $( function(){
 
 	function calcRoute( from ) {
 		$.getJSON(
-			"http://www.hi-rezclimate.org/~chome/test/min.py/drinking_water",
+			"http://api.aerial-proj.org/water/min.py/drinking_water",
 			{ "lat": from.lat(), "lon": from.lng() },
 			function( data, status ){
 
